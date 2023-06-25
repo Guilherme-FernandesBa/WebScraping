@@ -106,7 +106,9 @@ def mercado_livre_extract(results):
         try:
             price_parent = i.find(
                 'div', 'ui-search-price__second-line shops__price-second-line')
-            price = price_parent.find('span', 'price-tag-fraction').text
+            price = price_parent.find('span', 'price-tag-fraction').text 
+            if(price_parent.find('span', 'price-tag-cents') != None):
+                price +="." +price_parent.find('span', 'price-tag-cents').text
         except AttributeError:
             price = "Não encontrado"
 
