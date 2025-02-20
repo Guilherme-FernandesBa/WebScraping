@@ -1,7 +1,8 @@
-from amazon import main_amazon
-from mercadoLivre import main_mercado_livre
-from colorama import init
 from colorama import  Style, Fore
+from funcoes.intencao import *
+from funcoes.produto import *
+from funcoes.driver import *
+from funcoes.ExcelSaver import *
 
 
 
@@ -13,16 +14,19 @@ def main():
 
 
 def menu():
-    print(f"\nAtualmente nossas opções são:\n1 - Amazon\n2 - Mercado Livre\n3 - Sair")
+    print(f"\nAtualmente nossas opções são:\n1 - Amazon\n2 - Mercado Livre\n3 - Kabum\n4 - Sair")
     print("digite numero ou escreva sua opçao:")
     opcao = input()
     if (opcao.lower() == "amazon" or opcao == "1"):
-        main_amazon()
+        main_buscar("amazon")
         reentrada()
     elif (opcao.lower() == "mercado livre" or opcao == "2"):
-        main_mercado_livre()
+        main_buscar("ml")
         reentrada()
-    elif (opcao == "3"):
+    elif (opcao.lower() == "kabum" or opcao == "3"):
+        main_buscar("kbm")
+        reentrada()
+    elif (opcao == "4"):
         print("Até logo :)!")
         return
     else:
@@ -46,5 +50,21 @@ def reentrada():
         print("Não te entendi :( Mas até logo :)!")
         return
     
+def main_buscar(loja):
+    produto = Produto()
+    IntencaoCliente = Intencao("","", loja ,False)
+
+    IntencaoCliente.buscar_intencao()
+
+    if IntencaoCliente.confirmado == False:
+        return 
+
+    busca = Searcher(IntencaoCliente.produto.lower(), IntencaoCliente.paginas)
+    busca.configurar_driver()
+    busca.buscar_produto(loja, produto, busca)
+    produto.exibir_produtos()
+    save = ExcelSaver(produto)
+    save.salvar(loja)
+
 
 main()
